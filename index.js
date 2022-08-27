@@ -48,7 +48,37 @@ app.get("/api-get-productnumber-in-category", function (req, res){
         else res.send(data);
     })
 })
-
+// Tham số
+// Lọc theo danh mục
+app.get("/api-product-by-category", function (req, res){
+    const categoryId = req.query.categoryid;
+    const sql_txt = "SELECT product.id, product.name AS product_name, product.price, product.category_id, category.name AS category_name  FROM product LEFT JOIN category ON product.category_id = category.id WHERE product.category_id =  " + categoryId;
+    conn.query(sql_txt, function (err, data){
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
+// Tìm kiếm sản phẩm
+app.get("/search-product", function (req, res){
+    const q = req.query.q;
+    const sql_txt = `SELECT * FROM product WHERE name LIKE '%${q}%'`;
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
+// Chi tiết sản phẩm
+app.get("/detail-product",function (req,res) {
+    const id = req.query.id;
+    const sql_txt = "SELECT * FROM product WHERE id = " + id;
+    conn.query(sql_txt,function (err,data) {
+        if(err) res.send("Error");
+        else if(data.length ==0)
+            res.send("404 not found");
+        else
+            res.send(data[0]);
+    })
+})
 
 app.get("/", function (req, res) {
     res.send("Hello World!");
