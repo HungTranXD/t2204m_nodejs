@@ -8,7 +8,7 @@ app.listen(port, function () {
 
 const mysql = require("mysql");
 const conn = mysql.createConnection({
-    host: "db4free",
+    host: "db4free.net",
     user: "hung_t2204m",
     password: "t2204m123", //XAMPP: để trống
     database: "tranhung_nodejs",
