@@ -133,7 +133,7 @@ app.get("/api-get-bridge", function (req, res){
 
 //API get total number of posts
 app.get("/api-get-total-number", function (req, res){
-    const sql_txt = "SELECT COUNT(id) FROM bridge";
+    const sql_txt = "SELECT COUNT(id) AS total FROM bridge";
     conn.query(sql_txt, function (err, data) {
         if(err) res.send("Error");
         else res.send(data);
