@@ -107,7 +107,7 @@ app.get("/api-get-continent", function (req, res){
 })
 //API get list of all countries
 app.get("/api-get-countries", function (req, res){
-    const sql_txt = "SELECT * FROM country ORDER BY name ASC";
+    const sql_txt = "SELECT code, name AS country_name, continent_id FROM country ORDER BY name ASC";
     conn.query(sql_txt, function (err, data) {
         if(err) res.send("Error");
         else res.send(data);
