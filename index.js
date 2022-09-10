@@ -97,14 +97,6 @@ const conn = mysql.createConnection({
 
 
 // -------------- E-PROJECT ----------------
-//nhap
-app.get("/nhap", function (req, res){
-    const sql_txt = "SELECT (SELECT COUNT(id) FROM bridge) AS total,(SELECT JSON_ARRAYAGG(JSON_OBJECT('id', j.id, 'bridge_name', j.bridge_name, 'thumbnail', j.thumbnail, 'posted_date', j.posted_date, 'detail_location', j.detail_location, 'country_code', j.country_code, 'country_name', j.country_name, 'continent_name', j.continent_name , 'type', j.type, 'total_length', j.total_length)) FROM (SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id LIMIT 10 OFFSET 20) AS j) AS data";
-    conn.query(sql_txt, function (err, data) {
-        if(err) res.send("Error");
-        else res.send(data);
-    })
-})
 //API get list of all continents
 app.get("/api-get-continent", function (req, res){
     const sql_txt = "SELECT * FROM continent ORDER BY id";
@@ -140,8 +132,10 @@ app.get("/api-get-bridge", function (req, res){
 })
 //API get list of bridges per page (with limit and offset)
 app.get("/api-get-bridge", function (req, res){
-    const sql_txt = "SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id";
-    conn.query(sql_txt, function (err, data) {
+    const limit = req.query.limit;
+    const offset = req.query.offset;
+    const sql_txt = `SELECT (SELECT COUNT(id) FROM bridge) AS total,(SELECT JSON_ARRAYAGG(JSON_OBJECT('id', j.id, 'bridge_name', j.bridge_name, 'thumbnail', j.thumbnail, 'posted_date', j.posted_date, 'detail_location', j.detail_location, 'country_code', j.country_code, 'country_name', j.country_name, 'continent_name', j.continent_name , 'type', j.type, 'total_length', j.total_length)) FROM (SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id LIMIT ${limit} OFFSET ${offset}) AS j) AS data`;
+    conn.query(sql_txt, function (err, data){
         if(err) res.send("Error");
         else res.send(data);
     })
