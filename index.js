@@ -97,9 +97,17 @@ const conn = mysql.createConnection({
 
 
 // -------------- E-PROJECT ----------------
-//API get list of continents
+//API get list of all continents
 app.get("/api-get-continent", function (req, res){
     const sql_txt = "SELECT * FROM continent ORDER BY id";
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
+//API get list of all countries
+app.get("/api-get-countries", function (req, res){
+    const sql_txt = "SELECT * FROM country ORDER BY name ASC";
     conn.query(sql_txt, function (err, data) {
         if(err) res.send("Error");
         else res.send(data);
