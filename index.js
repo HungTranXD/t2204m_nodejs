@@ -97,6 +97,14 @@ const conn = mysql.createConnection({
 
 
 // -------------- E-PROJECT ----------------
+//nhap
+app.get("/nhap", function (req, res){
+    const sql_txt = "SELECT (SELECT COUNT(id) FROM bridge) AS total, (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', bridge.id, 'bridge_name', bridge.name, 'thumbnail', bridge.thumbnail, 'posted_date', bridge.posted_date, 'detail_location', bridge_detail.detail_location, 'country_code', bridge.country_code, 'country_name', country.name, 'continent_name', continent.name , 'type', bridge_detail.type, 'total_length', bridge_detail.total_length)) FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id LIMIT 10) AS data;";
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
 //API get list of all continents
 app.get("/api-get-continent", function (req, res){
     const sql_txt = "SELECT * FROM continent ORDER BY id";
@@ -122,7 +130,15 @@ app.get("/api-country-by-continent", function (req, res){
         else res.send(data);
     })
 })
-//API get list of bridges
+//API get list of bridges (All bridge at once)
+app.get("/api-get-bridge", function (req, res){
+    const sql_txt = "SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id";
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
+//API get list of bridges per page (with limit and offset)
 app.get("/api-get-bridge", function (req, res){
     const sql_txt = "SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id";
     conn.query(sql_txt, function (err, data) {
