@@ -97,6 +97,8 @@ const conn = mysql.createConnection({
 
 
 // -------------- E-PROJECT ----------------
+
+
 //API get list of all continents
 app.get("/api-get-continent", function (req, res){
     const sql_txt = "SELECT * FROM continent ORDER BY id";
@@ -122,29 +124,13 @@ app.get("/api-country-by-continent", function (req, res){
         else res.send(data);
     })
 })
+
+
+// ---------------- 1. WITHOUT SERVER PAGINATION --------------------
 //API get list of bridges (All bridge at once)
 app.get("/api-get-bridge", function (req, res){
     const sql_txt = "SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id";
     conn.query(sql_txt, function (err, data) {
-        if(err) res.send("Error");
-        else res.send(data);
-    })
-})
-
-//API get total number of posts
-app.get("/api-get-total-number", function (req, res){
-    const sql_txt = "SELECT COUNT(id) AS total FROM bridge";
-    conn.query(sql_txt, function (err, data) {
-        if(err) res.send("Error");
-        else res.send(data);
-    })
-})
-//API get list of bridges per page (with limit and offset)
-app.get("/api-get-bridge-page", function (req, res){
-    const limit = req.query.limit;
-    const offset = req.query.offset;
-    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id LIMIT ${limit} OFFSET ${offset}`;
-    conn.query(sql_txt, function (err, data){
         if(err) res.send("Error");
         else res.send(data);
     })
@@ -167,3 +153,51 @@ app.get("/api-bridge-by-country", function (req, res){
         else res.send(data);
     })
 })
+
+
+// ---------------- 2. WITH SERVER PAGINATION (THROUGH LIMIT AND OFFSET) --------------------
+//API get total number of posts
+app.get("/api-get-total-number", function (req, res){
+    const sql_txt = "SELECT COUNT(id) AS total FROM bridge";
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
+//API get list of bridges per page (with limit and offset)
+app.get("/api-get-bridge-page", function (req, res){
+    const continentId = req.query.continentId;
+    const countryCode = req.query.countryCode;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
+    if(continentId === 'all') {
+        if(countryCode === 'all') {
+            const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id LIMIT ${limit} OFFSET ${offset}`;
+            conn.query(sql_txt, function (err, data){
+                if(err) res.send("Error");
+                else res.send(data);
+            })
+        } else {
+            const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE country.code = "${countryCode}" ORDER BY bridge.id LIMIT ${limit} OFFSET ${offset}`;
+            conn.query(sql_txt, function (err, data){
+                if(err) res.send("Error");
+                else res.send(data);
+            })
+        }
+    } else {
+        if (countryCode === 'all') {
+            const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE continent.id = ${continentId} ORDER BY bridge.id LIMIT ${limit} OFFSET ${offset}`;
+            conn.query(sql_txt, function (err, data){
+                if(err) res.send("Error");
+                else res.send(data);
+            })
+        } else {
+            const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE country.code = "${countryCode}" ORDER BY bridge.id LIMIT ${limit} OFFSET ${offset}`;
+            conn.query(sql_txt, function (err, data){
+                if(err) res.send("Error");
+                else res.send(data);
+            })
+        }
+    }
+})
+
