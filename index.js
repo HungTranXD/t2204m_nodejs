@@ -228,3 +228,17 @@ app.get("/api-get-bridge-page", function (req, res){
     }
 })
 
+
+//API get a bridge detail (all it's information)
+app.get("/api-bridge-detail", function (req, res){
+    const bridgeId = req.query.bridgeid;
+    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.coordinates, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.main_material, bridge_detail.total_length, bridge_detail.width, bridge_detail.height, bridge_detail.longest_span, bridge_detail.clearance_below, bridge_detail.construction_start, bridge_detail.construction_end, bridge_detail.opened_date, bridge_detail.introduction, bridge_detail.history, images_table.images FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id LEFT JOIN (SELECT bridge_id, JSON_ARRAYAGG(JSON_OBJECT('image_id', id, 'title', title, 'url', url)) AS images FROM image GROUP BY bridge_id) AS images_table ON bridge.id = images_table.bridge_id WHERE bridge.id = ${bridgeId}`;
+    conn.query(sql_txt, function (err, data){
+        if(err) res.send("Error");
+        else {
+            res.data = res.data.replace(/\\/g, "");
+            res.send(data);
+        };
+    })
+})
+
