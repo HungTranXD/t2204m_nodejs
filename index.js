@@ -166,8 +166,8 @@ app.get("/api-get-total-number", function (req, res){
 })
 //API get list of bridges per page (with limit and offset)
 app.get("/api-get-bridge-page", function (req, res){
-    const continentId = req.query.continentId;
-    const countryCode = req.query.countryCode;
+    const continentId = req.query.continentid;
+    const countryCode = req.query.countrycode;
     const limit = req.query.limit;
     const offset = req.query.offset;
     if(continentId === 'all') {
