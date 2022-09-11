@@ -158,11 +158,38 @@ app.get("/api-bridge-by-country", function (req, res){
 // ---------------- 2. WITH SERVER PAGINATION (THROUGH LIMIT AND OFFSET) --------------------
 //API get total number of posts
 app.get("/api-get-total-number", function (req, res){
-    const sql_txt = "SELECT COUNT(id) AS total FROM bridge";
-    conn.query(sql_txt, function (err, data) {
-        if(err) res.send("Error");
-        else res.send(data);
-    })
+    const continentId = req.query.continentid;
+    const countryCode = req.query.countrycode;
+    if(continentId === 'all') {
+        if(countryCode === 'all') {
+            const sql_txt = "SELECT COUNT(id) AS total FROM bridge";
+            conn.query(sql_txt, function (err, data) {
+                if(err) res.send("Error");
+                else res.send(data);
+            })
+        } else {
+            const sql_txt = "SELECT COUNT(id) AS total FROM bridge WHERE country_code = ${countryCode}";
+            conn.query(sql_txt, function (err, data) {
+                if(err) res.send("Error");
+                else res.send(data);
+            })
+        }
+    } else {
+        if (countryCode === 'all') {
+            const sql_txt = "SELECT COUNT(bridge.id) AS total FROM bridge LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE continent.id = ${continentId}";
+            conn.query(sql_txt, function (err, data) {
+                if(err) res.send("Error");
+                else res.send(data);
+            })
+        } else {
+            const sql_txt = "SELECT COUNT(id) AS total FROM bridge WHERE country_code = ${countryCode}";
+            conn.query(sql_txt, function (err, data) {
+                if(err) res.send("Error");
+                else res.send(data);
+            })
+        }
+    }
+
 })
 //API get list of bridges per page (with limit and offset)
 app.get("/api-get-bridge-page", function (req, res){
