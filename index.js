@@ -168,7 +168,7 @@ app.get("/api-get-total-number", function (req, res){
                 else res.send(data);
             })
         } else {
-            const sql_txt = "SELECT COUNT(id) AS total FROM bridge WHERE country_code = ${countryCode}";
+            const sql_txt = `SELECT COUNT(id) AS total FROM bridge WHERE country_code = ${countryCode}`;
             conn.query(sql_txt, function (err, data) {
                 if(err) res.send("Error");
                 else res.send(data);
@@ -176,13 +176,13 @@ app.get("/api-get-total-number", function (req, res){
         }
     } else {
         if (countryCode === 'all') {
-            const sql_txt = "SELECT COUNT(bridge.id) AS total FROM bridge LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE continent.id = ${continentId}";
+            const sql_txt = `SELECT COUNT(bridge.id) AS total FROM bridge LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE continent.id = ${continentId}`;
             conn.query(sql_txt, function (err, data) {
                 if(err) res.send("Error");
                 else res.send(data);
             })
         } else {
-            const sql_txt = "SELECT COUNT(id) AS total FROM bridge WHERE country_code = ${countryCode}";
+            const sql_txt = `SELECT COUNT(id) AS total FROM bridge WHERE country_code = ${countryCode}`;
             conn.query(sql_txt, function (err, data) {
                 if(err) res.send("Error");
                 else res.send(data);
