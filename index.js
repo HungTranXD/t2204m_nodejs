@@ -236,7 +236,7 @@ app.get("/api-bridge-detail", function (req, res){
     conn.query(sql_txt, function (err, data){
         if(err) res.send("Error");
         else {
-            data = data.replace(/\\"/g, "\"");
+            // data = data.replace(/\\"/g, "\"");
             res.send(data);
         };
     })
