@@ -242,3 +242,15 @@ app.get("/api-bridge-detail", function (req, res){
     })
 })
 
+//API get top list
+app.get("/api-get-top-list", function (req, res){
+    const sql_txt = "SELECT * FROM top_list";
+    conn.query(sql_txt, function (err, data){
+        if(err) res.send("Error");
+        else {
+            res.send(data);
+        };
+    })
+})
+//API get top 10 bridge (longest, highest, tallest, oldest...)
+
