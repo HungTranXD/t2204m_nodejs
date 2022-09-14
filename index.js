@@ -249,7 +249,7 @@ app.get("/api-bridge-detail", function (req, res){
     })
 })
 
-//API get all top lists
+//API get all top lists info
 app.get("/api-all-top-lists", function (req, res){
     const sql_txt = "SELECT * FROM top_list";
     conn.query(sql_txt, function (err, data){
@@ -259,5 +259,37 @@ app.get("/api-all-top-lists", function (req, res){
         };
     })
 })
-//API get top 10 bridge (longest, highest, tallest, oldest...)
 
+//API get a single top list
+//- get the top list info (name, description)
+app.get("/api-top-list-info", function (req, res){
+    const topListId = req.query.toplistid;
+    const sql_txt = "SELECT * FROM top_list WHERE id = " + topListId;
+    conn.query(sql_txt, function (err, data){
+        if(err) res.send("Error");
+        else {
+            res.send(data);
+        };
+    })
+})
+//- get the top 10 bridges in the top list
+app.get("/api-top-10-bridges", function (req, res){
+    const sortOrder = req.query.sortorder;
+    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.coordinates, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.main_material, bridge_detail.total_length, bridge_detail.width, bridge_detail.height, bridge_detail.longest_span, bridge_detail.clearance_below, bridge_detail.construction_start, bridge_detail.construction_end, bridge_detail.opened_date, bridge_detail.oldest_order, bridge_detail.introduction FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge_detail.${sortOrder} DESC LIMIT 10`;
+    conn.query(sql_txt, function (err, data){
+        if(err) res.send("Error");
+        else {
+            res.send(data);
+        };
+    })
+})
+
+//API search name of bridges
+app.get("/search-bridge", function (req, res){
+    const q = req.query.q;
+    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE bridge.name LIKE '%${q}%'`;
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
