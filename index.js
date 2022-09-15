@@ -293,3 +293,13 @@ app.get("/search-bridge", function (req, res){
         else res.send(data);
     })
 })
+
+//API get a single continent info (for bridges-by-continent page)
+app.get("/api-single-continent-info", function (req, res){
+    const continentId = req.query.continentid;
+    const sql_txt = `SELECT * FROM continent WHERE id = ${continentId}`;
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
