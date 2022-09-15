@@ -13,20 +13,20 @@ app.use(function(req, res, next) {
 });
 
 const mysql = require("mysql");
-// const conn = mysql.createConnection({
-//     host: "db4free.net",
-//     user: "hung_t2204m",
-//     password: "t2204m123",
-//     database: "tranhung_nodejs",
-//     port: 3306
-// });
 const conn = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "", //XAMPP: để trống
-    database: "eproject",
+    host: "db4free.net",
+    user: "hung_t2204m",
+    password: "t2204m123",
+    database: "tranhung_nodejs",
     port: 3306
 });
+// const conn = mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     password: "", //XAMPP: để trống
+//     database: "eproject",
+//     port: 3306
+// });
 // conn viet tat connection
 
 // //lam API danh sach category
