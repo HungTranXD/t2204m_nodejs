@@ -305,7 +305,7 @@ app.get("/api-single-continent-info", function (req, res){
 })
 
 //API get images filter by continent
-app.get("/api-get-cotinent-images", function (req, res){
+app.get("/api-get-continent-images", function (req, res){
     const continentId = req.query.continentid;
     const sql_txt = `SELECT * FROM image WHERE bridge_id IN (SELECT id FROM bridge WHERE country_code IN (SELECT code FROM country WHERE continent_id = ${continentId}))`;
     conn.query(sql_txt, function (err, data) {
