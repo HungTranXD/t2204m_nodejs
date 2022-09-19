@@ -331,3 +331,15 @@ app.get("/api-top-bridge-of-continent", function (req, res){
         };
     })
 })
+
+
+
+// ----------------------------- API for gallery page -------------------------------
+//API get all images
+app.get("/api-get-all-images", function (req, res){
+    const sql_txt = `SELECT image.id, image.title, image.url, image.bridge_id, bridge.name FROM image LEFT JOIN bridge ON image.bridge_id = bridge.id`;
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
