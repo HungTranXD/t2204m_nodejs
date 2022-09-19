@@ -312,7 +312,7 @@ app.get("/api-single-continent-info", function (req, res){
 //API get images filter by continent
 app.get("/api-get-continent-images", function (req, res){
     const continentId = req.query.continentid;
-    const sql_txt = `SELECT * FROM image WHERE bridge_id IN (SELECT id FROM bridge WHERE country_code IN (SELECT code FROM country WHERE continent_id = ${continentId}))`;
+    const sql_txt = `SELECT image.id, image.title, image.url, image.bridge_id, bridge.name FROM image LEFT JOIN bridge ON image.bridge_id = bridge.id WHERE image.bridge_id IN (SELECT id FROM bridge WHERE country_code IN (SELECT code FROM country WHERE continent_id = ${continentId}))`;
     conn.query(sql_txt, function (err, data) {
         if(err) res.send("Error");
         else res.send(data);
