@@ -137,7 +137,7 @@ app.get("/api-country-by-continent", function (req, res){
 // ---------------- 1. WITHOUT SERVER PAGINATION --------------------
 //API get list of bridges (All bridge at once)
 app.get("/api-get-bridge", function (req, res){
-    const sql_txt = "SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id";
+    const sql_txt = "SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length, bridge_detail.introduction FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id";
     conn.query(sql_txt, function (err, data) {
         if(err) res.send("Error");
         else res.send(data);
@@ -146,7 +146,7 @@ app.get("/api-get-bridge", function (req, res){
 //API get list of bridges filter by continent
 app.get("/api-bridge-by-continent", function (req, res){
     const continentId = req.query.continentid;
-    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE continent.id = ${continentId} ORDER BY bridge.id`;
+    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length, bridge_detail.introduction FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE continent.id = ${continentId} ORDER BY bridge.id`;
     conn.query(sql_txt, function (err, data){
         if(err) res.send("Error");
         else res.send(data);
@@ -155,7 +155,7 @@ app.get("/api-bridge-by-continent", function (req, res){
 //API get list of bridges filter by country
 app.get("/api-bridge-by-country", function (req, res){
     const countryCode = req.query.countrycode;
-    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE country.code = "${countryCode}" ORDER BY bridge.id`;
+    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length, bridge_detail.introduction FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE country.code = "${countryCode}" ORDER BY bridge.id`;
     conn.query(sql_txt, function (err, data){
         if(err) res.send("Error");
         else res.send(data);
