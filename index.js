@@ -135,7 +135,7 @@ app.get("/api-country-by-continent", function (req, res){
 
 
 // ---------------- 1. WITHOUT SERVER PAGINATION --------------------
-//API get list of bridges (All bridge at once)
+//API get lapi-top-bridge-of-continentist of bridges (All bridge at once)
 app.get("/api-get-bridge", function (req, res){
     const sql_txt = "SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length, bridge_detail.introduction FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id ORDER BY bridge.id";
     conn.query(sql_txt, function (err, data) {
@@ -323,7 +323,7 @@ app.get("/api-get-continent-images", function (req, res){
 app.get("/api-top-bridge-of-continent", function (req, res){
     const continentId = req.query.continentid;
     const sortOrder = req.query.sortorder;
-    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.coordinates, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.main_material, bridge_detail.total_length, bridge_detail.width, bridge_detail.height, bridge_detail.longest_span, bridge_detail.clearance_below, bridge_detail.construction_start, bridge_detail.construction_end, bridge_detail.opened_date FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE continent.id = ${continentId} ORDER BY bridge_detail.${sortOrder} DESC LIMIT 1`;
+    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.coordinates, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.name AS continent_name, bridge_detail.type, bridge_detail.main_material, bridge_detail.total_length, bridge_detail.width, bridge_detail.height, bridge_detail.longest_span, bridge_detail.clearance_below, bridge_detail.construction_start, bridge_detail.construction_end, bridge_detail.opened_date, bridge_detail.introduction FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE continent.id = ${continentId} ORDER BY bridge_detail.${sortOrder} DESC LIMIT 1`;
     conn.query(sql_txt, function (err, data){
         if(err) res.send("Error");
         else {
