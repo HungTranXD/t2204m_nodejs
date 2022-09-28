@@ -453,7 +453,7 @@ app.get("/api-get-total-number", function (req, res){
     const countryCode = req.query.countrycode;
     if(continentId === 'all') {
         if(countryCode === 'all') {
-            const sql_txt = "SELECT COUNT(id) AS total FROM bridge";
+            const sql_txt = "SELECT COUNT(id) AS total FROM nhom3_bridge";
             conn.query(sql_txt, function (err, data) {
                 if(err) res.send("Error");
                 else res.send(data);
