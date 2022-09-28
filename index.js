@@ -349,3 +349,14 @@ app.get("/api-get-all-images", function (req, res){
         else res.send(data);
     })
 })
+
+
+// -------------------------- API for historical great bridges page-------------------------------
+//API search name of bridges
+app.get("/historical-great-bridges", function (req, res){
+    const sql_txt = `SELECT bridge.id, bridge.name AS bridge_name, bridge.thumbnail, bridge.posted_date, bridge_detail.detail_location, bridge.country_code, country.name AS country_name, continent.id AS continent_id, continent.name AS continent_name, bridge_detail.type, bridge_detail.total_length, bridge_detail.introduction FROM bridge LEFT JOIN bridge_detail ON bridge.id = bridge_detail.id LEFT JOIN country ON bridge.country_code = country.code LEFT JOIN continent ON country.continent_id = continent.id WHERE bridge.id IN (20, 95, 6, 4, 7, 96, 34, 98, 50)`;
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
