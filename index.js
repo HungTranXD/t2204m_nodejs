@@ -660,3 +660,11 @@ app.get("/modern-great-bridges", function (req, res){
         else res.send(data);
     })
 })
+// -------------------------- API for high-level achievements bridges page-------------------------------
+app.get("/high-level-achievements", function (req, res){
+    const sql_txt = `SELECT nhom3_bridge.id, nhom3_bridge.name AS bridge_name, nhom3_bridge.thumbnail, nhom3_bridge.posted_date, nhom3_bridge_detail.detail_location, nhom3_bridge.country_code, nhom3_country.name AS country_name, nhom3_continent.id AS continent_id, nhom3_continent.name AS continent_name, nhom3_bridge_detail.type, nhom3_bridge_detail.total_length, nhom3_bridge_detail.introduction FROM nhom3_bridge LEFT JOIN nhom3_bridge_detail ON nhom3_bridge.id = nhom3_bridge_detail.id LEFT JOIN nhom3_country ON nhom3_bridge.country_code = nhom3_country.code LEFT JOIN nhom3_continent ON nhom3_country.continent_id = nhom3_continent.id WHERE nhom3_bridge.id IN (54, 46, 99, 90, 100, 13, 101, 88)`;
+    conn.query(sql_txt, function (err, data) {
+        if(err) res.send("Error");
+        else res.send(data);
+    })
+})
